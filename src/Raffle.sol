@@ -25,9 +25,12 @@ contract Raffle {
             revert Raffle_NotEnoughEthSent();
         }
         s_players.push(payable(msg.sender));
-        emit EnteredRaffle(msg.sender)
+        emit EnteredRaffle(msg.sender);
     }
 
+    // 1. Get a random number
+    // 2. Use the random number to pick a player
+    // 3. Be automatically called
     function pickWinner() public {}
 
     /** Getter Functions */
