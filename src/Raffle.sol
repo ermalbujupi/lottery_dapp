@@ -8,7 +8,7 @@ pragma solidity ^0.8.18;
  * @dev Implements Chainlink VRFv2
  */
 contract Raffle {
-    error NotEnoughEthSent();
+    error Raffle_NotEnoughEthSent();
 
     uint256 private immutable i_entranceFee;
 
@@ -18,7 +18,7 @@ contract Raffle {
 
     function enterRaffle() external payable {
         if (msg.value >= i_entranceFee) {
-            revert NotEnoughEthSent();
+            revert Raffle_NotEnoughEthSent();
         }
     }
 
