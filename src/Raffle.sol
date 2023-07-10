@@ -90,6 +90,7 @@ contract Raffle is VRFConsumerBaseV2 {
         );
     }
 
+    // CEI: Checks, Effect, Interactions
     function fulfillRandomWords(
         uint256 _requestId,
         uint256[] memory _randomWords
@@ -103,13 +104,11 @@ contract Raffle is VRFConsumerBaseV2 {
         s_raffleState = RaffleState.OPEN;
         s_players = new address payable[](0);
         s_lastTimeStamp = block.timestamp;
-
+        emit PickedWinner(winner);
         (bool success, ) = winner.call{value: address(this).balance}("");
         if (!success) {
             revert Raffle_TransferFailed();
         }
-
-        emit PickedWinner(winner);
     }
 
     /** Getter Functions */
@@ -118,3 +117,11 @@ contract Raffle is VRFConsumerBaseV2 {
         return i_entranceFee;
     }
 }
+
+// CEI:
+// Checks
+// checking with ifs, reverting etc
+// Effects
+// effects within our own contract
+// Interactions
+// with other contract
