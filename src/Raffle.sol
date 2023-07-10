@@ -2,6 +2,7 @@
 pragma solidity ^0.8.18;
 
 import {VRFCoordinatorV2Interface} from "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
+import {VRFConsumerBaseV2} from "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 
 /**
  * @title A sample Raffle Contract
@@ -9,8 +10,9 @@ import {VRFCoordinatorV2Interface} from "@chainlink/contracts/src/v0.8/interface
  * @notice This contract is for creating a sample raffle
  * @dev Implements Chainlink VRFv2
  */
-contract Raffle {
+contract Raffle is VRFConsumerBaseV2 {
     error Raffle_NotEnoughEthSent();
+    error Raffle_TransferFailed();
 
     /** State variables */
     uint16 private constant REQUEST_CONFIRMATIONS = 3;
@@ -25,6 +27,7 @@ contract Raffle {
 
     uint256 private s_lastTimeStamp;
     address payable[] private s_players;
+    address private s_recentWinner;
 
     //* Events */
     event EnteredRaffle(address indexed player);
@@ -32,11 +35,11 @@ contract Raffle {
     constructor(
         uint256 entranceFee,
         uint256 interval,
-        VRFCoordinatorV2Interface vrfCoordinator,
+        address vrfCoordinator,
         bytes32 gasLane,
         uint64 subscriptionId,
         uint32 callbackGasLimit
-    ) {
+    ) VRFConsumerBaseV2(vrfCoordinator) {
         i_entranceFee = entranceFee;
         i_interval = interval;
         i_vrfCoordinator = vrfCoordinator;
@@ -70,6 +73,22 @@ contract Raffle {
             i_callbackGasLimit,
             NUM_WORDS
         );
+    }
+
+    function fulfillRandomWords(
+        uint256 _requestId,
+        uint256[] memory _randomWords
+    ) internal override {
+        // s_players = 10
+        // rng = 12
+        // 12 % 10 = 2 <- whoever has index 2 in our array is gonna be the random winner
+        uint256 indexOfWinner = _randomWords[0] % s_players.length;
+        address payable winner = s_players[indexOfWinner];
+        s_recentWinner = winner;
+        (bool success, ) = winner.call{value: address(this).balance}("");
+        if (!success) {
+            revert Raffle_TransferFailed();
+        }
     }
 
     /** Getter Functions */
