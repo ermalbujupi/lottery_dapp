@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: SEE LICENSE IN LICENSE
 pragma solidity ^0.8.18;
 
-import {VRFCoordinatorV2Interface} from "lib/chainlink-brownie-contracts/contracts/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
+import {VRFCoordinatorV2Interface} from "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 
 /**
  * @title A sample Raffle Contract
@@ -13,12 +13,12 @@ contract Raffle {
     error Raffle_NotEnoughEthSent();
 
     /** State variables */
-    uint256 private constant REQUEST_CONFIRMATIONS = 3;
-    uint256 private constant NUM_WORDS = 1;
+    uint16 private constant REQUEST_CONFIRMATIONS = 3;
+    uint32 private constant NUM_WORDS = 1;
 
     uint256 private immutable i_entranceFee;
     uint256 private immutable i_interval; // @dev Duration of the lottery in seconds
-    address private immutable i_vrfCoordinator;
+    VRFCoordinatorV2Interface private immutable i_vrfCoordinator;
     bytes32 private immutable i_gasLane;
     uint64 private immutable i_subscriptionId;
     uint32 private immutable i_callbackGasLimit;
@@ -32,7 +32,7 @@ contract Raffle {
     constructor(
         uint256 entranceFee,
         uint256 interval,
-        address vrfCoordinator,
+        VRFCoordinatorV2Interface vrfCoordinator,
         bytes32 gasLane,
         uint64 subscriptionId,
         uint32 callbackGasLimit
