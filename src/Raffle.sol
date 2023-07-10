@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: SEE LICENSE IN LICENSE
 pragma solidity ^0.8.18;
 
+import {VRFCoordinatorV2Interface} from "lib/chainlink-brownie-contracts/contracts/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
+
 /**
  * @title A sample Raffle Contract
  * @author Ermal Bujupaj
@@ -32,8 +34,8 @@ contract Raffle {
         uint256 interval,
         address vrfCoordinator,
         bytes32 gasLane,
-        uint64 subscriptionId
-        uint32 callbackGasLimit.
+        uint64 subscriptionId,
+        uint32 callbackGasLimit
     ) {
         i_entranceFee = entranceFee;
         i_interval = interval;
@@ -66,7 +68,7 @@ contract Raffle {
             i_subscriptionId,
             REQUEST_CONFIRMATIONS,
             i_callbackGasLimit,
-            numWords
+            NUM_WORDS
         );
     }
 
