@@ -32,6 +32,7 @@ contract RaffleTest is Test {
             subscriptionId,
             callbackGasLimit
         ) = helperConfig.activeNetworkConfig();
+        vm.deal(PLAYER, STARTING_USER_BALANCE);
     }
 
     function testRaffleInitializesInOpenState() public view {
